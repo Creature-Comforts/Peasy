@@ -23,7 +23,15 @@ public struct Request: Hashable {
 	public let body: Data
 	
 	private var variables: [String: String] = [:]
-	
+
+	public init(method: Method, headers: [Header], path: String, queryParameters: [QueryParameter], body: Data) {
+		self.method = method
+		self.headers = headers
+		self.path = path
+		self.queryParameters = queryParameters
+		self.body = body
+	}
+
 	/// Returns a variable value for a key.
 	/// Variable values are populated by requests matching a `.path` rule with variables, i.e.
 	/// `"/path/:variable_name"`, which you would then be able to get the value of with
@@ -32,7 +40,7 @@ public struct Request: Hashable {
 		guard let value = variables[key] else { fatalError("No value found for \(key)") }
 		return value
 	}
-	
+
 }
 
 public extension Request {
@@ -64,14 +72,6 @@ public extension Request {
 }
 
 extension Request {
-	
-	init(method: Method, headers: [Header], path: String, queryParameters: [QueryParameter], body: Data) {
-		self.method = method
-		self.headers = headers
-		self.path = path
-		self.queryParameters = queryParameters
-		self.body = body
-	}
 	
 	init(header: RequestParser.RequestHeader, body: Data) {
 		self = Request(method: header.method, headers: header.headers, path: header.path, queryParameters: header.queryParams, body: body)
